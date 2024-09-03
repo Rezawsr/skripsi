@@ -30,17 +30,24 @@ model_choice = st.sidebar.radio("Choose Model", ["LSTM", "GRU"])
 START = "2015-01-01"
 TODAY = date.today().strftime("%Y-%m-%d")
 
-# Function to load data
+import time
+
+# Function to load data with retry mechanism
 @st.cache_data
-def load_data(ticker, start, end):
-    try:
-        data = yf.download(ticker, start=start, end=end)
-        if data.empty:
-            st.error("Data is empty!")
-        return data
-    except Exception as e:
-        st.error(f"Error downloading data: {e}")
-        return pd.DataFrame()
+def load_data(ticker, start, end, retries=3, delay=5):
+    attempt = 0
+    while attempt < retries:
+        try:
+            data = yf.download(ticker, start=start, end=end)
+            if data.empty:
+                st.error("Data is empty!")
+            return data
+        except Exception as e:
+            attempt += 1
+            st.warning(f"Attempt {attempt} failed: {e}")
+            time.sleep(delay)  # Wait before retrying
+    st.error("Failed to download data after several attempts.")
+    return pd.DataFrame()
 
 # Load and display data
 data_load_state = st.text("Loading data...")
