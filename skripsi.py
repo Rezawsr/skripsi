@@ -32,10 +32,14 @@ TODAY = date.today().strftime("%Y-%m-%d")
 
 # Function to load data
 @st.cache_data
-def load_data(ticker):
-    data = yf.download(ticker, START, TODAY)
-    data.reset_index(inplace=True)
-    return data
+def load_data(ticker, start, end):
+    try:
+        data = yf.download(ticker, start=start, end=end)
+        print(data.head())  # Tambahkan ini untuk debug
+        return data
+    except Exception as e:
+        print(f"Error downloading data: {e}")
+        return pd.DataFrame()
 
 # Load and display data
 data_load_state = st.text("Load data....")
