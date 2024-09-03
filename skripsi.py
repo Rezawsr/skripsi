@@ -35,24 +35,28 @@ TODAY = date.today().strftime("%Y-%m-%d")
 def load_data(ticker, start, end):
     try:
         data = yf.download(ticker, start=start, end=end)
-        print(data.head())  # Tambahkan ini untuk debug
+        if data.empty:
+            st.error("Data is empty!")
         return data
     except Exception as e:
-        print(f"Error downloading data: {e}")
+        st.error(f"Error downloading data: {e}")
         return pd.DataFrame()
 
 # Load and display data
-data_load_state = st.text("Load data....")
-data = load_data(selected_stock)
+data_load_state = st.text("Loading data...")
+data = load_data(selected_stock, START, TODAY)
 data_load_state.text("Loading data...done!")
+
+if data.empty:
+    st.stop()
 
 st.subheader("Raw Data")
 st.write(data.tail())
 
 def plot_raw_data():
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name='Stock Open', line=dict(color='blue')))
-    fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name='Stock Close', line=dict(color='red')))
+    fig.add_trace(go.Scatter(x=data.index, y=data['Open'], name='Stock Open', line=dict(color='blue')))
+    fig.add_trace(go.Scatter(x=data.index, y=data['Close'], name='Stock Close', line=dict(color='red')))
     fig.update_layout(title="Historical Stock Prices", xaxis_title="Date", yaxis_title="Price", template="plotly_dark")
     st.plotly_chart(fig)
 
@@ -140,26 +144,26 @@ st.subheader("Rekomendasi dan KPI")
 st.markdown("---")
 
 def give_recommendation(metrics):
-    roe = float(metrics.get("ROE", "N/A").replace(",", ".")) if metrics.get("ROE") != "N/A" else None
-    roa = float(metrics.get("ROA", "N/A").replace(",", ".")) if metrics.get("ROA") != "N/A" else None
-    car = float(metrics.get("CAR", "N/A").replace(",", ".")) if metrics.get("CAR") != "N/A" else None
+    roe = float(metrics.get("ROE", "0").replace(",", ".")) if metrics.get("ROE") != "N/A" else 0
+    roa = float(metrics.get("ROA", "0").replace(",", ".")) if metrics.get("ROA") != "N/A" else 0
+    car = float(metrics.get("CAR", "0").replace(",", ".")) if metrics.get("CAR") != "N/A" else 0
 
     recommendations = []
     potential = True  # Default is that the stock has potential
 
-    if roe and roe > 10:
+    if roe > 10:
         recommendations.append("ROE yang tinggi (>10%)")
     else:
         recommendations.append("ROE yang rendah")
         potential = False
 
-    if roa and roa > 1.5:
+    if roa > 1.5:
         recommendations.append("ROA yang baik (>1.5%)")
     else:
         recommendations.append("ROA yang rendah")
         potential = False
 
-    if car and car > 20:
+    if car > 20:
         recommendations.append("CAR yang tinggi (>20%)")
     else:
         recommendations.append("CAR yang rendah")
@@ -187,7 +191,7 @@ with col3:
 st.markdown("---")
 st.markdown("### KPI Analysis")
 
-kpi_color = "green" if is_potential else "red"
+kpi_color = "#90EE90" if is_potential else "#FF6F61"
 kpi_message = "Saham ini memiliki potensi yang baik." if is_potential else "Saham ini memerlukan perhatian lebih."
 
 st.markdown(f"<div style='text-align: center; padding:10px; border: 2px solid black; border-radius:10px; background-color: {kpi_color}; color:white;'>{kpi_message}</div>", unsafe_allow_html=True)
@@ -196,9 +200,8 @@ st.markdown(f"<div style='text-align: center; padding:10px; border: 2px solid bl
 if 'Close' not in data.columns or data.empty:
     st.error("Data not available or 'Close' column is missing!")
 else:
-    data = data[['Date', 'Close']]
-    data.set_index('Date', inplace=True)
     data = data[['Close']]
+    data.index = pd.to_datetime(data.index)
 
     # Normalize the data
     scaler = MinMaxScaler(feature_range=(0, 1))
