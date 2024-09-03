@@ -31,19 +31,27 @@ START = "2015-01-01"
 TODAY = date.today().strftime("%Y-%m-%d")
 
 # Function to load data
+import yfinance as yf
+import pandas as pd
+import time
+
 @st.cache_data
-def load_data(ticker):
-    data = yf.download(ticker, START, TODAY)
-    data.reset_index(inplace=True)
-    return data
+def load_data(ticker, start, end, retries=3, delay=5):
+    attempt = 0
+    while attempt < retries:
+        try:
+            data = yf.download(ticker, start=start, end=end)
+            if data.empty:
+                st.error("Data is empty!")
+                return pd.DataFrame()
+            return data
+        except Exception as e:
+            attempt += 1
+            st.warning(f"Attempt {attempt} failed: {e}")
+            time.sleep(delay)  # Wait before retrying
+    st.error("Failed to download data after several attempts.")
+    return pd.DataFrame()
 
-# Load and display data
-data_load_state = st.text("Load data....")
-data = load_data(selected_stock)
-data_load_state.text("Loading data...done!")
-
-st.subheader("Raw Data")
-st.write(data.tail())
 
 def plot_raw_data():
     fig = go.Figure()
