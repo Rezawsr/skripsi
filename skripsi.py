@@ -57,7 +57,7 @@ if data.empty:
     st.error("Data not available!")
 else:
     st.subheader("Historical Stock Prices")
-    plot_raw_data()
+    st.line_chart(data.set_index('Date')['Close'])
 
 # Financial Metrics for different stocks
 financial_metrics = {
