@@ -31,10 +31,6 @@ START = "2015-01-01"
 TODAY = date.today().strftime("%Y-%m-%d")
 
 # Function to load data
-import yfinance as yf
-import pandas as pd
-import time
-
 @st.cache_data
 def load_data(ticker, start, end, retries=3, delay=5):
     attempt = 0
@@ -44,6 +40,7 @@ def load_data(ticker, start, end, retries=3, delay=5):
             if data.empty:
                 st.error("Data is empty!")
                 return pd.DataFrame()
+            data.reset_index(inplace=True)
             return data
         except Exception as e:
             attempt += 1
@@ -52,15 +49,14 @@ def load_data(ticker, start, end, retries=3, delay=5):
     st.error("Failed to download data after several attempts.")
     return pd.DataFrame()
 
+# Load and display data
+data = load_data(selected_stock, START, TODAY)
 
-def plot_raw_data():
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name='Stock Open', line=dict(color='blue')))
-    fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name='Stock Close', line=dict(color='red')))
-    fig.update_layout(title="Historical Stock Prices", xaxis_title="Date", yaxis_title="Price", template="plotly_dark")
-    st.plotly_chart(fig)
-
-plot_raw_data()
+if data.empty:
+    st.error("Data not available!")
+else:
+    st.subheader("Historical Stock Prices")
+    plot_raw_data()
 
 # Financial Metrics for different stocks
 financial_metrics = {
@@ -117,36 +113,32 @@ financial_metrics = {
 # Display KPI metrics based on selected stock
 st.subheader("Financial Metrics")
 st.markdown("---")
-col1, col2, col3 = st.columns(3)
-
 metrics = financial_metrics.get(selected_stock, {})
+
+col1, col2, col3 = st.columns(3)
 with col1:
     st.metric(label="**Current Ratio**", value=metrics.get("Current Ratio", "N/A"))
-
 with col2:
     st.metric(label="**LDR**", value=metrics.get("LDR", "N/A"))
-
 with col3:
     st.metric(label="**CAR**", value=metrics.get("CAR", "N/A"))
 
 col4, col5, col6 = st.columns(3)
 with col4:
     st.metric(label="**ROE**", value=metrics.get("ROE", "N/A"))
-
 with col5:
     st.metric(label="**ROA**", value=metrics.get("ROA", "N/A"))
-
 with col6:
     st.metric(label="**EPS**", value=metrics.get("EPS", "N/A"))
 
-# Rekomendasi Berdasarkan Metrik Keuangan
+# Recommendations Based on Financial Metrics
 st.subheader("Rekomendasi dan KPI")
 st.markdown("---")
 
 def give_recommendation(metrics):
-    roe = float(metrics.get("ROE", "N/A").replace(",", ".")) if metrics.get("ROE") != "N/A" else None
-    roa = float(metrics.get("ROA", "N/A").replace(",", ".")) if metrics.get("ROA") != "N/A" else None
-    car = float(metrics.get("CAR", "N/A").replace(",", ".")) if metrics.get("CAR") != "N/A" else None
+    roe = float(metrics.get("ROE", "0").replace(",", ".")) if metrics.get("ROE") != "N/A" else None
+    roa = float(metrics.get("ROA", "0").replace(",", ".")) if metrics.get("ROA") != "N/A" else None
+    car = float(metrics.get("CAR", "0").replace(",", ".")) if metrics.get("CAR") != "N/A" else None
 
     recommendations = []
     potential = True  # Default is that the stock has potential
@@ -180,10 +172,8 @@ st.markdown("#### Potensi Saham Berdasarkan Metrik Keuangan:")
 col1, col2, col3 = st.columns(3)
 with col1:
     st.markdown(f"<div style='padding:10px; border: 2px solid black; border-radius:10px; background-color: {'#90EE90' if 'ROE yang tinggi' in recommendations[0] else '#FF6F61'};'>{recommendations[0]}</div>", unsafe_allow_html=True)
-
 with col2:
     st.markdown(f"<div style='padding:10px; border: 2px solid black; border-radius:10px; background-color: {'#90EE90' if 'ROA yang baik' in recommendations[1] else '#FF6F61'};'>{recommendations[1]}</div>", unsafe_allow_html=True)
-
 with col3:
     st.markdown(f"<div style='padding:10px; border: 2px solid black; border-radius:10px; background-color: {'#90EE90' if 'CAR yang tinggi' in recommendations[2] else '#FF6F61'};'>{recommendations[2]}</div>", unsafe_allow_html=True)
 
