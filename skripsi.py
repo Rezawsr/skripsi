@@ -71,43 +71,43 @@ financial_metrics = {
     },
     "BBRI.JK": {
         "Current Ratio": 1.12,
-        "LDR": "65.50",
-        "CAR": "21.94",
+        "LDR": "87.86",
+        "CAR": "22.37",
         "ROE": "19.10",
         "ROA": "1.41",
-        "EPS": "Rp.400"
+        "EPS": "Rp.167"
     },
     "BMRI.JK": {
-        "Current Ratio": 0.29,
-        "LDR": "64.00",
-        "CAR": "23.20",
+        "Current Ratio": 0.30,
+        "LDR": "94.34",
+        "CAR": "19.12",
         "ROE": "19.35",
         "ROA": "1.16",
-        "EPS": "Rp.350"
+        "EPS": "Rp.370"
     },
     "BBNI.JK": {
-        "Current Ratio": 0.92,
-        "LDR": "62.00",
-        "CAR": "18.00",
+        "Current Ratio": 0.29,
+        "LDR": "87.65",
+        "CAR": "21.73",
         "ROE": "12.85",
         "ROA": "0.87",
-        "EPS": "Rp.280"
+        "EPS": "Rp.415"
     },
     "BRIS.JK": {
         "Current Ratio": 2.86,
-        "LDR": "85.00",
-        "CAR": "25.00",
+        "LDR": "305.38",
+        "CAR": "19.53",
         "ROE": "15.73",
         "ROA": "0.76",
-        "EPS": "Rp.220"
+        "EPS": "Rp.51"
     },
     "MEGA.JK": {
         "Current Ratio": 2.92,
-        "LDR": "70.00",
-        "CAR": "24.00",
+        "LDR": "70.34",
+        "CAR": "25.57",
         "ROE": "18.48",
         "ROA": "2.14",
-        "EPS": "Rp.410"
+        "EPS": "Rp.226"
     }
 }
 
