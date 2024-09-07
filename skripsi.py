@@ -28,7 +28,7 @@ st.sidebar.header('Select Prediction Model')
 model_choice = st.sidebar.radio("Choose Model", ["LSTM", "GRU"])
 
 # Define the start and end dates for data fetching
-START = "2015-01-01"
+START = "2010-01-01"
 TODAY = date.today().strftime("%Y-%m-%d")
 
 # Function to load data
