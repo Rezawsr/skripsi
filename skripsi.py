@@ -187,6 +187,9 @@ kpi_message = "Saham ini memiliki potensi yang baik." if is_potential else "Saha
 
 st.markdown(f"<div style='text-align: center; padding:10px; border: 2px solid black; border-radius:10px; background-color: {kpi_color}; color:white;'>{kpi_message}</div>", unsafe_allow_html=True)
 
+# Tambahkan pembatas sebelum bagian "Training LSTM Model"
+st.markdown("---")
+
 # Prepare data for LSTM and GRU
 if 'Close' not in data.columns or data.empty:
     st.error("Data not available or 'Close' column is missing!")
