@@ -64,6 +64,7 @@ financial_metrics = {
     "BBCA.JK": {
         "Current Ratio": 0.31,
         "LDR": "65.06",
+        "LCR": "336.6",
         "CAR": "25.94",
         "ROE": "19.35",
         "ROA": "1.76",
@@ -72,6 +73,7 @@ financial_metrics = {
     "BBRI.JK": {
         "Current Ratio": 1.12,
         "LDR": "87.86",
+        "LCR": "199.7",
         "CAR": "22.37",
         "ROE": "19.10",
         "ROA": "1.41",
@@ -80,6 +82,7 @@ financial_metrics = {
     "BMRI.JK": {
         "Current Ratio": 0.30,
         "LDR": "94.34",
+        "LCR": "191.4",
         "CAR": "19.12",
         "ROE": "19.35",
         "ROA": "1.16",
@@ -88,6 +91,7 @@ financial_metrics = {
     "BBNI.JK": {
         "Current Ratio": 0.29,
         "LDR": "87.65",
+        "LCR": "206.1",
         "CAR": "21.73",
         "ROE": "12.85",
         "ROA": "0.87",
@@ -96,6 +100,7 @@ financial_metrics = {
     "BRIS.JK": {
         "Current Ratio": 2.86,
         "LDR": "305.38",
+        "LCR": "201.6",
         "CAR": "19.53",
         "ROE": "15.73",
         "ROA": "0.76",
@@ -104,6 +109,7 @@ financial_metrics = {
     "MEGA.JK": {
         "Current Ratio": 2.92,
         "LDR": "70.34",
+        "LCR": "125.4",
         "CAR": "25.57",
         "ROE": "18.48",
         "ROA": "2.14",
@@ -116,20 +122,22 @@ st.subheader("Financial Metrics")
 st.markdown("---")
 metrics = financial_metrics.get(selected_stock, {})
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.metric(label="**Current Ratio**", value=metrics.get("Current Ratio", "N/A"))
 with col2:
     st.metric(label="**LDR**", value=metrics.get("LDR", "N/A"))
 with col3:
+    st.metric(label="**LCR**", value=metrics.get("LCR", "N/A"))
+with col4:
     st.metric(label="**CAR**", value=metrics.get("CAR", "N/A"))
 
 col4, col5, col6 = st.columns(3)
-with col4:
-    st.metric(label="**ROE**", value=metrics.get("ROE", "N/A"))
 with col5:
-    st.metric(label="**ROA**", value=metrics.get("ROA", "N/A"))
+    st.metric(label="**ROE**", value=metrics.get("ROE", "N/A"))
 with col6:
+    st.metric(label="**ROA**", value=metrics.get("ROA", "N/A"))
+with col7:
     st.metric(label="**EPS**", value=metrics.get("EPS", "N/A"))
 
 # Recommendations Based on Financial Metrics
