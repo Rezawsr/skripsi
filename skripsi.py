@@ -117,7 +117,6 @@ financial_metrics = {
     }
 }
 
-# Display KPI metrics based on selected stock
 st.subheader("Financial Metrics")
 st.markdown("---")
 metrics = financial_metrics.get(selected_stock, {})
@@ -132,7 +131,7 @@ with col3:
 with col4:
     st.metric(label="**CAR**", value=metrics.get("CAR", "N/A"))
 
-col4, col5, col6 = st.columns(3)
+col5, col6, col7 = st.columns(3)  # Adjusted to three columns
 with col5:
     st.metric(label="**ROE**", value=metrics.get("ROE", "N/A"))
 with col6:
